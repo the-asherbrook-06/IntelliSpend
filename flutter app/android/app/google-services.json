@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "596830035513",
+    "project_id": "asher-app-intellispend",
+    "storage_bucket": "asher-app-intellispend.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596830035513:android:74c05e874bea98e99437e8",
+        "android_client_info": {
+          "package_name": "app.asher.intellispend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "596830035513-fag990f1mctclb6nqujd15qj27g66kep.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOY_UWMzXJ525YPRXtn6nhe-YOIx2DtcA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "596830035513-fag990f1mctclb6nqujd15qj27g66kep.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
