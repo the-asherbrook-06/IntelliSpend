@@ -8,6 +8,7 @@ import 'firebase_options.dart';
 // Pages
 import 'package:intellispend/pages/welcome_page.dart';
 import 'package:intellispend/pages/signup_page.dart';
+import 'package:intellispend/pages/splash_page.dart';
 import 'package:intellispend/pages/login_page.dart';
 import 'package:intellispend/pages/home_page.dart';
 
@@ -35,8 +36,9 @@ class IntelliSpend extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: theme.light(),
       darkTheme: theme.dark(),
-      initialRoute: '/welcome',
+      initialRoute: '/',
       routes: {
+        '/': (_) => const SplashPage(),
         '/welcome': (_) => const WelcomePage(),
         '/login': (_) => const LoginPage(),
         '/signup': (_) => const SignupPage(),
