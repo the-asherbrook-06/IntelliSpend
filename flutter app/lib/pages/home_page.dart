@@ -72,6 +72,7 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.all(8),
         child: ListView(
           children: [
+            SizedBox(height: 20),
             Row(
               children: [
                 Container(
