@@ -15,9 +15,7 @@ class WelcomePage extends StatelessWidget {
       ),
     );
 
-    final brightness =
-        View.of(context).platformDispatcher.platformBrightness ==
-            Brightness.light
+    final brightness = View.of(context).platformDispatcher.platformBrightness == Brightness.light
         ? 'light'
         : 'dark';
 
@@ -27,19 +25,10 @@ class WelcomePage extends StatelessWidget {
         child: Column(
           children: [
             Expanded(child: SizedBox()),
-            SvgPicture.asset(
-              'assets/$brightness/personal_finance.svg',
-              height: 300,
-            ),
+            SvgPicture.asset('assets/$brightness/personal_finance.svg', height: 300),
             SizedBox(height: 20),
-            Text(
-              "IntelliSpend",
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            Text(
-              "Track smarter. Spend better.",
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
+            Text("IntelliSpend", style: Theme.of(context).textTheme.displaySmall),
+            Text("Track smarter. Spend better.", style: Theme.of(context).textTheme.bodyLarge),
             Expanded(child: SizedBox()),
             SizedBox(
               width: MediaQuery.sizeOf(context).width - 60,
@@ -47,9 +36,7 @@ class WelcomePage extends StatelessWidget {
               child: ElevatedButton(
                 style: ButtonStyle(
                   shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40),
-                    ),
+                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                   ),
                 ),
                 onPressed: () {
@@ -65,9 +52,7 @@ class WelcomePage extends StatelessWidget {
               child: ElevatedButton(
                 style: ButtonStyle(
                   shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40),
-                    ),
+                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                   ),
                 ),
                 onPressed: () {

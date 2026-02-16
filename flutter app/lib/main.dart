@@ -42,7 +42,7 @@ class IntelliSpend extends StatelessWidget {
         '/welcome': (_) => const WelcomePage(),
         '/login': (_) => const LoginPage(),
         '/signup': (_) => const SignupPage(),
-        '/home': (_) => const HomePage()
+        '/home': (_) => const HomePage(),
       },
     );
   }
