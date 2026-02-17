@@ -26,6 +26,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = View.of(context).platformDispatcher.platformBrightness == Brightness.light
+        ? 'light'
+        : 'dark';
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -69,10 +72,10 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: ListView(
           children: [
-            SizedBox(height: 20),
+            SizedBox(height: 24),
             Row(
               children: [
                 Container(
@@ -80,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                   width: (MediaQuery.of(context).size.width - 24) / 2,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(36),
-                    color: Theme.of(context).colorScheme.tertiary,
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
                   ),
                   padding: EdgeInsets.all(16),
                   child: Column(
@@ -94,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 "Balance",
                                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  color: Theme.of(context).colorScheme.onTertiary,
+                                  color: Theme.of(context).colorScheme.onTertiaryContainer,
                                 ),
                               ),
                             ],
@@ -106,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                               color: Theme.of(context).colorScheme.onTertiary,
                               size: 20,
                             ),
-                            backgroundColor: Theme.of(context).colorScheme.tertiaryFixed,
+                            backgroundColor: Theme.of(context).colorScheme.tertiary,
                             radius: 20,
                           ),
                         ],
@@ -115,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         "\$ $_balance",
                         style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onTertiary,
+                          color: Theme.of(context).colorScheme.onTertiaryContainer,
                         ),
                       ),
                     ],
@@ -159,7 +162,9 @@ class _HomePageState extends State<HomePage> {
                               color: Theme.of(context).colorScheme.onSurface,
                               size: 20,
                             ),
-                            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                            backgroundColor: brightness == "dark"
+                                ? Theme.of(context).colorScheme.surfaceBright
+                                : Theme.of(context).colorScheme.surfaceDim,
                             radius: 20,
                           ),
                         ],
@@ -184,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                   width: (MediaQuery.of(context).size.width - 24) / 2,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(36),
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.primaryContainer,
                   ),
                   padding: EdgeInsets.all(16),
                   child: Column(
@@ -198,7 +203,7 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 "Income",
                                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                                 ),
                               ),
                             ],
@@ -210,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                               color: Theme.of(context).colorScheme.onPrimary,
                               size: 20,
                             ),
-                            backgroundColor: Theme.of(context).colorScheme.primaryFixed,
+                            backgroundColor: Theme.of(context).colorScheme.primary,
                             radius: 20,
                           ),
                         ],
@@ -219,7 +224,7 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         "\$ $_income",
                         style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimary,
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
                         ),
                       ),
                     ],
@@ -231,7 +236,7 @@ class _HomePageState extends State<HomePage> {
                   width: (MediaQuery.of(context).size.width - 24) / 2,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(36),
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Theme.of(context).colorScheme.secondaryContainer,
                   ),
                   padding: EdgeInsets.all(16),
                   child: Column(
@@ -245,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 "Expenses",
                                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSecondary,
+                                  color: Theme.of(context).colorScheme.onSecondaryContainer,
                                 ),
                               ),
                             ],
@@ -257,7 +262,7 @@ class _HomePageState extends State<HomePage> {
                               color: Theme.of(context).colorScheme.onSecondary,
                               size: 20,
                             ),
-                            backgroundColor: Theme.of(context).colorScheme.secondaryFixed,
+                            backgroundColor: Theme.of(context).colorScheme.secondary,
                             radius: 20,
                           ),
                         ],
@@ -266,7 +271,7 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         "\$ $_expenses",
                         style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onSecondary,
+                          color: Theme.of(context).colorScheme.onSecondaryContainer,
                         ),
                       ),
                     ],
@@ -278,8 +283,9 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
         backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
+        elevation: 2,
+        onPressed: () {},
         child: Icon(
           HugeIconsStroke.moneyAdd01,
           color: Theme.of(context).colorScheme.onTertiaryContainer,

@@ -35,7 +35,7 @@ class IntelliSpend extends StatelessWidget {
       title: "IntelliSpend",
       debugShowCheckedModeBanner: false,
       theme: theme.light(),
-      darkTheme: theme.dark(),
+      darkTheme: theme.darkHighContrast(),
       initialRoute: '/',
       routes: {
         '/': (_) => const SplashPage(),
