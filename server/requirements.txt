@@ -1,5 +1,4 @@
 scikit-learn
 flask-cors
-gunicorn
 joblib
 flask
