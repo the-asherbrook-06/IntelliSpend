@@ -10,7 +10,12 @@ class FirestoreService {
     return doc.exists;
   }
 
-  Future<void> createUserDocument(String uid, String email, String authMethod, {String? displayName}) async {
+  Future<void> createUserDocument(
+    String uid,
+    String email,
+    String authMethod, {
+    String? displayName,
+  }) async {
     log("UID: $uid");
     log("Email: $email");
 
@@ -20,7 +25,7 @@ class FirestoreService {
       'balance': 0,
       'budget': 0,
       'authMethod': authMethod,
-      if (displayName != null) 'User': displayName,
+      'User': displayName ?? "User",
     });
 
     log("UserData added");

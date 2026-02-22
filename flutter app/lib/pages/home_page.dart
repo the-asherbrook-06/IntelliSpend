@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
             Container(
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainer,
+                color: Theme.of(context).colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(40),
               ),
               child: Column(
@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             SizedBox(height: 40),
                             SvgPicture.asset(
-                              "assets/${brightness}/online_payments.svg",
+                              "assets/$brightness/online_payments.svg",
                               height: 200,
                             ),
                             SizedBox(height: 60),

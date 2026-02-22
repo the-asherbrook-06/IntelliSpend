@@ -45,7 +45,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(height: 40),
-                        SvgPicture.asset("assets/${brightness}/online_payments.svg", height: 200),
+                        SvgPicture.asset("assets/$brightness/online_payments.svg", height: 200),
                         SizedBox(height: 60),
                         Text("No Transactions", style: Theme.of(context).textTheme.titleLarge),
                         Text(
