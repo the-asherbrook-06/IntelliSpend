@@ -1,9 +1,9 @@
 // Packages
-import 'dart:developer';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'dart:developer';
 import 'dart:convert';
 
 // Services
@@ -11,7 +11,10 @@ import 'package:intellispend/services/firestore_service.dart';
 import 'package:intellispend/services/auth_service.dart';
 
 class AddTransaction extends StatefulWidget {
-  const AddTransaction({super.key});
+  final Map<String, dynamic>? transaction;
+  final String? transactionId;
+
+  const AddTransaction({super.key, this.transaction, this.transactionId});
 
   @override
   State<AddTransaction> createState() => _AddTransactionState();
@@ -24,6 +27,17 @@ class _AddTransactionState extends State<AddTransaction> {
   String _transactionType = 'expense';
   DateTime _selectedDate = DateTime.now();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.transaction != null) {
+      _amountController.text = widget.transaction!['amount'].toString();
+      _descriptionController.text = widget.transaction!['description'];
+      _transactionType = widget.transaction!['type'];
+      _selectedDate = (widget.transaction!['date'] as Timestamp).toDate();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +62,7 @@ class _AddTransactionState extends State<AddTransaction> {
               ],
             ),
             Text(
-              "Add New Transaction",
+              widget.transaction == null ? "Add New Transaction" : "Edit Transaction",
               style: Theme.of(
                 context,
               ).textTheme.headlineLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface),
@@ -174,11 +188,11 @@ class _AddTransactionState extends State<AddTransaction> {
                           ),
                         ),
                         icon: Icon(
-                          HugeIconsStroke.add01,
+                          widget.transaction == null ? HugeIconsStroke.add01 : HugeIconsStroke.checkmarkCircle02,
                           color: Theme.of(context).colorScheme.onPrimaryContainer,
                         ),
                         label: Text(
-                          "Add Transaction",
+                          widget.transaction == null ? "Add Transaction" : "Update Transaction",
                           style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
                         ),
                         onPressed: () async {
@@ -191,72 +205,76 @@ class _AddTransactionState extends State<AddTransaction> {
                           try {
                             final user = AuthService().getCurrentUser();
 
-                            final response = await http.post(
-                              Uri.parse('https://intellispend-6o7c.onrender.com/predict'),
-                              headers: {'Content-Type': 'application/json'},
-                              body: jsonEncode({'text': _descriptionController.text.trim()}),
-                            );
-
-                            final prediction = jsonDecode(response.body);
-                            log(prediction.toString());
-                            String category = prediction['category'];
-                            double confidence = prediction['confidence'];
-
-                            if (confidence < 0.5) {
-                              final probabilities =
-                                  prediction['all_probabilities'] as Map<String, dynamic>;
-                              final sortedCategories = probabilities.entries.toList()
-                                ..sort((a, b) => b.value.compareTo(a.value));
-                              final top4 = sortedCategories.map((e) => e.key).toList();
-
-                              final selectedCategory = await showDialog<String>(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: Text('Confirm Category'),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: top4
-                                        .map(
-                                          (cat) => ListTile(
-                                            title: Text(cat),
-                                            onTap: () => Navigator.pop(context, cat),
-                                          ),
-                                        )
-                                        .toList(),
-                                  ),
-                                ),
-                              );
-
-                              if (selectedCategory == null) {
-                                setState(() {
-                                  _isLoading = false;
-                                });
-                                return;
-                              }
-                              category = selectedCategory;
-                              
-                              await http.post(
-                                Uri.parse('https://intellispend-6o7c.onrender.com/suggest'),
+                            String category;
+                            if (widget.transaction != null && _descriptionController.text.trim() == widget.transaction!['description']) {
+                              category = widget.transaction!['category'];
+                            } else {
+                              final response = await http.post(
+                                Uri.parse('https://intellispend-6o7c.onrender.com/predict'),
                                 headers: {'Content-Type': 'application/json'},
-                                body: jsonEncode({
-                                  'text': _descriptionController.text.trim(),
-                                  'suggested_category': selectedCategory,
-                                }),
+                                body: jsonEncode({'text': _descriptionController.text.trim()}),
                               );
+
+                              final prediction = jsonDecode(response.body);
+                              log(prediction.toString());
+                              category = prediction['category'];
+                              double confidence = prediction['confidence'];
+
+                              if (confidence < 0.5) {
+                                final probabilities = prediction['all_probabilities'] as Map<String, dynamic>;
+                                final sortedCategories = probabilities.entries.toList()
+                                  ..sort((a, b) => b.value.compareTo(a.value));
+                                final top4 = sortedCategories.map((e) => e.key).toList();
+
+                                final selectedCategory = await showDialog<String>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text('Confirm Category'),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: top4.map((cat) => ListTile(
+                                        title: Text(cat),
+                                        onTap: () => Navigator.pop(context, cat),
+                                      )).toList(),
+                                    ),
+                                  ),
+                                );
+
+                                if (selectedCategory == null) {
+                                  setState(() { _isLoading = false; });
+                                  return;
+                                }
+                                category = selectedCategory;
+                                
+                                await http.post(
+                                  Uri.parse('https://intellispend-6o7c.onrender.com/suggest'),
+                                  headers: {'Content-Type': 'application/json'},
+                                  body: jsonEncode({
+                                    'text': _descriptionController.text.trim(),
+                                    'suggested_category': selectedCategory,
+                                  }),
+                                );
+                              }
                             }
 
-                            await FirestoreService().addTransaction(user!.uid, {
+                            final data = {
                               'amount': double.parse(_amountController.text.trim()),
                               'description': _descriptionController.text.trim(),
                               'date': _selectedDate,
                               'type': _transactionType,
                               'category': category,
-                            });
+                            };
+
+                            if (widget.transaction == null) {
+                              await FirestoreService().addTransaction(user!.uid, data);
+                            } else {
+                              await FirestoreService().updateTransaction(user!.uid, widget.transactionId!, data);
+                            }
 
                             if (!mounted) return;
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Transaction added successfully")),
+                              SnackBar(content: Text(widget.transaction == null ? "Transaction added successfully" : "Transaction updated successfully")),
                             );
                           } catch (e) {
                             ScaffoldMessenger.of(

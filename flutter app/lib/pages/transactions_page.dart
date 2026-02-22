@@ -103,7 +103,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
                         final doc = snapshot.data!.docs[index];
-                        return TransactionItem(transaction: doc.data() as Map<String, dynamic>);
+                        return TransactionItem(
+                          transaction: doc.data() as Map<String, dynamic>,
+                          transactionId: doc.id,
+                        );
                       },
                     );
                   },

@@ -54,4 +54,14 @@ class FirestoreService {
     
     return query.snapshots();
   }
+
+  Future<void> updateTransaction(String uid, String transactionId, Map<String, dynamic> data) async {
+    await _db.collection('userData').doc(uid).collection('transactions').doc(transactionId).update(data);
+    log("Transaction updated");
+  }
+
+  Future<void> deleteTransaction(String uid, String transactionId) async {
+    await _db.collection('userData').doc(uid).collection('transactions').doc(transactionId).delete();
+    log("Transaction deleted");
+  }
 }

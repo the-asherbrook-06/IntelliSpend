@@ -255,7 +255,10 @@ class _HomePageState extends State<HomePage> {
 
                       return Column(
                         children: snapshot.data!.docs.map((doc) {
-                          return TransactionItem(transaction: doc.data() as Map<String, dynamic>);
+                          return TransactionItem(
+                            transaction: doc.data() as Map<String, dynamic>,
+                            transactionId: doc.id,
+                          );
                         }).toList(),
                       );
                     },
