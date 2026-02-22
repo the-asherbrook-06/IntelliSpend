@@ -1,13 +1,20 @@
 // Packages
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
+import 'package:svg_flutter/svg_flutter.dart';
 import 'package:flutter/material.dart';
 
 // Services
+import 'package:intellispend/services/firestore_service.dart';
 import 'package:intellispend/services/auth_service.dart';
 
 // Assets
 import 'package:intellispend/services/quotes.dart';
+
+// Pages
+import 'package:intellispend/pages/add_expense.dart';
+
+// Widgets
+import 'package:intellispend/widgets/status_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,18 +24,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  User? user = AuthService().getCurrentUser();
+  List payments = [];
+  Map<String, dynamic>? userData;
 
-  final _balance = 0;
-  final _budget = 0;
-  final _income = 0;
-  final _expenses = 0;
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final user = AuthService().getCurrentUser();
+    if (user != null) {
+      final data = await FirestoreService().getUserData(user.uid);
+      setState(() {
+        userData = data;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final user = AuthService().getCurrentUser();
     final brightness = View.of(context).platformDispatcher.platformBrightness == Brightness.light
         ? 'light'
         : 'dark';
+
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -58,7 +79,10 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.all(8),
             icon: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.network(user!.photoURL ?? ""),
+              child: Image.network(
+                user!.photoURL ??
+                    "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png",
+              ),
             ),
           ),
           IconButton(
@@ -78,217 +102,140 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 24),
             Row(
               children: [
-                Container(
-                  height: 160,
-                  width: (MediaQuery.of(context).size.width - 24) / 2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(36),
-                    color: Theme.of(context).colorScheme.tertiaryContainer,
-                  ),
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Balance",
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  color: Theme.of(context).colorScheme.onTertiaryContainer,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Expanded(child: SizedBox()),
-                          CircleAvatar(
-                            child: Icon(
-                              HugeIconsStroke.wallet01,
-                              color: Theme.of(context).colorScheme.onTertiary,
-                              size: 20,
-                            ),
-                            backgroundColor: Theme.of(context).colorScheme.tertiary,
-                            radius: 20,
-                          ),
-                        ],
-                      ),
-                      Expanded(child: SizedBox()),
-                      Text(
-                        "\$ $_balance",
-                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onTertiaryContainer,
-                        ),
-                      ),
-                    ],
-                  ),
+                StatusCard(
+                  label: ["Balance"],
+                  icon: HugeIconsStroke.wallet01,
+                  currency: Icons.currency_rupee_rounded,
+                  amount: userData?['balance'] ?? 0,
+                  colorScheme: "quaternary",
                 ),
                 SizedBox(width: 8),
-                Container(
-                  height: 160,
-                  width: (MediaQuery.of(context).size.width - 24) / 2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(36),
-                    color: Theme.of(context).colorScheme.surfaceContainer,
-                  ),
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Monthly",
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                ),
-                              ),
-                              Text(
-                                "Budget",
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Expanded(child: SizedBox()),
-                          CircleAvatar(
-                            child: Icon(
-                              HugeIconsStroke.savings,
-                              color: Theme.of(context).colorScheme.onSurface,
-                              size: 20,
-                            ),
-                            backgroundColor: brightness == "dark"
-                                ? Theme.of(context).colorScheme.surfaceBright
-                                : Theme.of(context).colorScheme.surfaceDim,
-                            radius: 20,
-                          ),
-                        ],
-                      ),
-                      Expanded(child: SizedBox()),
-                      Text(
-                        "\$ $_budget",
-                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
-                  ),
+                StatusCard(
+                  label: ["Monthly", "Budget"],
+                  icon: HugeIconsStroke.savings,
+                  currency: Icons.currency_rupee_rounded,
+                  amount: userData?['budget'] ?? 0,
+                  colorScheme: "tertiary",
                 ),
               ],
             ),
             SizedBox(height: 8),
             Row(
               children: [
-                Container(
-                  height: 160,
-                  width: (MediaQuery.of(context).size.width - 24) / 2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(36),
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                  ),
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                StatusCard(
+                  label: ["Income"],
+                  icon: HugeIconsStroke.moneyReceiveSquare,
+                  currency: Icons.currency_rupee_rounded,
+                  amount: 1000,
+                  colorScheme: "secondary",
+                ),
+                SizedBox(width: 8),
+                StatusCard(
+                  label: ["Expenses"],
+                  icon: HugeIconsStroke.moneySendSquare,
+                  currency: Icons.currency_rupee_rounded,
+                  amount: 1000,
+                  colorScheme: "primary",
+                ),
+              ],
+            ),
+            SizedBox(height: 12),
+            Container(
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                borderRadius: BorderRadius.circular(40),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Income",
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      Text(
+                        "Recent Transactions",
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      Expanded(child: SizedBox()),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/transactions');
+                        },
+                        icon: Icon(HugeIconsStroke.arrowRight01),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  (payments.isEmpty)
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 40),
+                            SvgPicture.asset(
+                              "assets/${brightness}/online_payments.svg",
+                              height: 200,
+                            ),
+                            SizedBox(height: 60),
+                            Text("No Transactions", style: Theme.of(context).textTheme.titleLarge),
+                            Text(
+                              "You haven't made any Transactions yet. Add a transaction to get started",
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            SizedBox(height: 12),
+                            ElevatedButton(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  // showDragHandle: true,
+                                  isScrollControlled: true,
+                                  context: context,
+                                  builder: (context) {
+                                    return AddTransaction();
+                                  },
+                                );
+                              },
+                              child: Text(
+                                "Add Transaction",
+                                style: TextStyle(
                                   color: Theme.of(context).colorScheme.onPrimaryContainer,
                                 ),
                               ),
-                            ],
-                          ),
-                          Expanded(child: SizedBox()),
-                          CircleAvatar(
-                            child: Icon(
-                              HugeIconsStroke.moneyReceiveCircle,
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              size: 20,
-                            ),
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            radius: 20,
-                          ),
-                        ],
-                      ),
-                      Expanded(child: SizedBox()),
-                      Text(
-                        "\$ $_income",
-                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimaryContainer,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 8),
-                Container(
-                  height: 160,
-                  width: (MediaQuery.of(context).size.width - 24) / 2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(36),
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                  ),
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Expenses",
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSecondaryContainer,
+                              style: ButtonStyle(
+                                backgroundColor: WidgetStatePropertyAll(
+                                  Theme.of(context).colorScheme.primaryContainer,
                                 ),
                               ),
-                            ],
-                          ),
-                          Expanded(child: SizedBox()),
-                          CircleAvatar(
-                            child: Icon(
-                              HugeIconsStroke.moneySendCircle,
-                              color: Theme.of(context).colorScheme.onSecondary,
-                              size: 20,
                             ),
-                            backgroundColor: Theme.of(context).colorScheme.secondary,
-                            radius: 20,
-                          ),
-                        ],
-                      ),
-                      Expanded(child: SizedBox()),
-                      Text(
-                        "\$ $_expenses",
-                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onSecondaryContainer,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                            SizedBox(height: 40),
+                          ],
+                        )
+                      :
+                        // TODO: Work in progress
+                        Text("data"),
+                ],
+              ),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         elevation: 2,
-        onPressed: () {},
+        onPressed: () {
+          showModalBottomSheet(
+            // showDragHandle: true,
+            isScrollControlled: true,
+            context: context,
+            builder: (context) {
+              return AddTransaction();
+            },
+          );
+        },
         child: Icon(
           HugeIconsStroke.moneyAdd01,
-          color: Theme.of(context).colorScheme.onTertiaryContainer,
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
         ),
       ),
     );

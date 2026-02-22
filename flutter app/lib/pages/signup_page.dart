@@ -1,10 +1,13 @@
 // packages
+import 'dart:developer';
+
 import 'package:hugeicons_pro/hugeicons.dart';
 import 'package:svg_flutter/svg_flutter.dart';
 import 'package:flutter/material.dart';
 
 // Services
 import 'package:intellispend/services/auth_service.dart';
+import 'package:intellispend/services/firestore_service.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -15,6 +18,7 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final GlobalKey _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repeatPasswordController = TextEditingController();
@@ -48,6 +52,22 @@ class _SignupPageState extends State<SignupPage> {
               SizedBox(height: 20),
               SvgPicture.asset('assets/$brightness/sign_up.svg', width: 240),
               SizedBox(height: 40),
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(HugeIconsStroke.user),
+                  hintText: "Name",
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Name is required";
+                  }
+
+                  return null;
+                },
+              ),
+              SizedBox(height: 12),
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
@@ -157,9 +177,22 @@ class _SignupPageState extends State<SignupPage> {
                               isLoading = !isLoading;
                             });
 
-                            await AuthService().signUpWithEmailAndPassword(
+                            final userCredential = await AuthService().signUpWithEmailAndPassword(
                               _emailController.text.trim(),
                               _passwordController.text.trim(),
+                            );
+
+                            await userCredential.user!.updateDisplayName(
+                              _nameController.text.trim(),
+                            );
+                            await userCredential.user!.reload();
+                            log("Name Added");
+
+                            await FirestoreService().createUserDocument(
+                              userCredential.user!.uid,
+                              _emailController.text.trim(),
+                              'email',
+                              displayName: _nameController.text.trim(),
                             );
 
                             if (!mounted) return;
@@ -198,7 +231,14 @@ class _SignupPageState extends State<SignupPage> {
                           isLoading = !isLoading;
                         });
 
-                        await AuthService().signInWithGoogle();
+                        final userCredential = await AuthService().signInWithGoogle();
+
+                        await FirestoreService().createUserDocument(
+                          userCredential.user!.uid,
+                          userCredential.user!.email!,
+                          'google',
+                          displayName: userCredential.user!.displayName,
+                        );
 
                         if (!mounted) return;
                         Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);

@@ -173,7 +173,7 @@ class MaterialTheme {
   static ColorScheme darkScheme() {
     return const ColorScheme(
       brightness: Brightness.dark,
-      primary: Color(0xffe0c56d),
+      primary: Color.fromRGBO(224, 197, 109, 1),
       surfaceTint: Color(0xffe0c56d),
       onPrimary: Color(0xff3c2f00),
       primaryContainer: Color(0xff564500),
@@ -344,7 +344,7 @@ class MaterialTheme {
        bodyColor: colorScheme.onSurface,
        displayColor: colorScheme.onSurface,
      ),
-     scaffoldBackgroundColor: colorScheme.background,
+     scaffoldBackgroundColor: colorScheme.surface,
      canvasColor: colorScheme.surface,
   );
 

@@ -1,4 +1,6 @@
 // Packages
+import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 
 // Pages
+import 'package:intellispend/pages/transactions_page.dart';
 import 'package:intellispend/pages/welcome_page.dart';
 import 'package:intellispend/pages/signup_page.dart';
 import 'package:intellispend/pages/splash_page.dart';
@@ -19,6 +22,7 @@ import 'package:intellispend/themes/util.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  log(Firebase.apps.toString());
   runApp(const IntelliSpend());
 }
 
@@ -40,9 +44,10 @@ class IntelliSpend extends StatelessWidget {
       routes: {
         '/': (_) => const SplashPage(),
         '/welcome': (_) => const WelcomePage(),
-        '/login': (_) => const LoginPage(),
         '/signup': (_) => const SignupPage(),
+        '/login': (_) => const LoginPage(),
         '/home': (_) => const HomePage(),
+        '/transactions': (_) => const TransactionsPage()
       },
     );
   }
