@@ -79,6 +79,8 @@ class StatusCard extends StatelessWidget {
         return Theme.of(context).colorScheme.tertiaryContainer;
       case 'quaternary':
         return Theme.of(context).colorScheme.surfaceContainer;
+      case 'error':
+        return Theme.of(context).colorScheme.errorContainer.withAlpha(180);
       default:
         return Theme.of(context).colorScheme.primaryContainer;
     }
@@ -94,6 +96,8 @@ class StatusCard extends StatelessWidget {
         return Theme.of(context).colorScheme.tertiary;
       case 'quaternary':
         return Theme.of(context).colorScheme.surfaceContainerHighest;
+      case 'error':
+        return Theme.of(context).colorScheme.error.withAlpha(210);
       default:
         return Theme.of(context).colorScheme.primary;
     }
@@ -109,6 +113,8 @@ class StatusCard extends StatelessWidget {
         return Theme.of(context).colorScheme.onTertiary;
       case 'quaternary':
         return Theme.of(context).colorScheme.onSurface;
+      case 'error':
+        return Theme.of(context).colorScheme.onError.withAlpha(180);
       default:
         return Theme.of(context).colorScheme.onPrimary;
     }
@@ -124,6 +130,8 @@ class StatusCard extends StatelessWidget {
         return Theme.of(context).colorScheme.onTertiaryContainer;
       case 'quaternary':
         return Theme.of(context).colorScheme.onSurface;
+      case 'error':
+        return Theme.of(context).colorScheme.error;
       default:
         return Theme.of(context).colorScheme.onPrimaryContainer;
     }

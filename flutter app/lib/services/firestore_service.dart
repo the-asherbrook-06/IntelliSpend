@@ -40,4 +40,18 @@ class FirestoreService {
     final doc = await _db.collection('userData').doc(uid).get();
     return doc.data();
   }
+
+  Stream<QuerySnapshot> getTransactions(String uid, {int? limit}) {
+    var query = _db
+        .collection('userData')
+        .doc(uid)
+        .collection('transactions')
+        .orderBy('date', descending: true);
+    
+    if (limit != null) {
+      query = query.limit(limit);
+    }
+    
+    return query.snapshots();
+  }
 }
