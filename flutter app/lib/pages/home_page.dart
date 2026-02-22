@@ -11,7 +11,7 @@ import 'package:intellispend/services/auth_service.dart';
 import 'package:intellispend/services/quotes.dart';
 
 // Pages
-import 'package:intellispend/pages/add_expense.dart';
+import 'package:intellispend/pages/add_transaction.dart';
 
 // Widgets
 import 'package:intellispend/widgets/status_card.dart';

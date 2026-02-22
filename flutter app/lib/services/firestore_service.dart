@@ -31,6 +31,11 @@ class FirestoreService {
     log("UserData added");
   }
 
+  Future<void> addTransaction(String uid, Map<String, dynamic> transactionData) async {
+    await _db.collection('userData').doc(uid).collection('transactions').add(transactionData);
+    log("Transaction added");
+  }
+
   Future<Map<String, dynamic>?> getUserData(String uid) async {
     final doc = await _db.collection('userData').doc(uid).get();
     return doc.data();

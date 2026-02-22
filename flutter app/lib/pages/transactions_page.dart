@@ -4,7 +4,7 @@ import 'package:hugeicons_pro/hugeicons.dart';
 import 'package:svg_flutter/svg.dart';
 
 // Pages
-import 'add_expense.dart';
+import 'add_transaction.dart';
 
 class TransactionsPage extends StatefulWidget {
   const TransactionsPage({super.key});
