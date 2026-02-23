@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                           icon: HugeIconsStroke.wallet01,
                           currency: Icons.currency_rupee_rounded,
                           amount: balance,
-                          colorScheme: (balance >= 0) ? "quaternary" : "error",
+                          colorScheme: (balance >= 0) ? "surface" : "error",
                         ),
                         SizedBox(width: 8),
                         StatusCard(
