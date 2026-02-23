@@ -102,8 +102,8 @@ class TransactionItem extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: Icon(HugeIconsStroke.delete02, color: Colors.red),
-              title: Text('Delete', style: TextStyle(color: Colors.red)),
+              leading: Icon(HugeIconsStroke.delete02, color: Colors.red.shade200),
+              title: Text('Delete', style: TextStyle(color: Colors.red.shade200)),
               onTap: () async {
                 Navigator.pop(context);
                 final confirm = await showDialog<bool>(
@@ -118,7 +118,7 @@ class TransactionItem extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () => Navigator.pop(context, true),
-                        child: Text('Delete', style: TextStyle(color: Colors.red)),
+                        child: Text('Delete', style: TextStyle(color: Colors.red.shade200)),
                       ),
                     ],
                   ),
